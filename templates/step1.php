@@ -42,7 +42,7 @@ echo '
 
   <h1 class="bg-primary">'.MySBConfigHelper::Value('website_name').'</h1>
 
-<form action="index.php?mod=dbmf3&amp;tpl=autosubs/step2&amp;contact_id=-1&amp;pid='.$pid.'"
+<form action="index.php?mod=dbmf3_asub&amp;tpl=step2&amp;contact_id=-1&amp;pid='.$pid.'"
       method="post">
 
   <h2>'._G('DBMF_autosubs_newcontact').'</h2>

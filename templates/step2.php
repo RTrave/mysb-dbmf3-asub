@@ -25,7 +25,7 @@ echo '
 
 if( !isset($_POST['autosubs_modifs']) )
   echo '
-<form action="index.php?mod=dbmf3&amp;tpl=autosubs/step2"
+<form action="index.php?mod=dbmf3_asub&amp;tpl=step2"
       method="post">';
 
 $classdisabled = '';
@@ -45,7 +45,7 @@ while($data_wcheck = MySBDB::fetch_array($app->dbmf_req_wcheck)) {
 
   $br_locked = false;
   $br_locked_txt = '';
-  $brlock = MySBConfigHelper::Value('dbmf_autosubs_blockreflock','dbmf3');
+  $brlock = MySBConfigHelper::Value('dbmf_autosubs_blockreflock','dbmf3_asub');
   if( $brlock!='' and $data_wcheck[$brlock]!=0 ) {
     $br_locked = true;
     $br_locked_txt = ' <i>(read-only)</i>';
@@ -136,7 +136,7 @@ if( !isset($_POST['autosubs_modifs']) )
 if( isset($_POST['autosubs_modifs']) )
     echo '
 <div class="actions">
-  <form action="index.php?mod=dbmf3&amp;tpl=autosubs/step2"
+  <form action="index.php?mod=dbmf3_asub&amp;tpl=step2"
         method="post">
   <div style="text-align: center; float: right;">
     <input type="hidden" name="new_email" value="'.$_POST['email'.$pid].'">
@@ -145,7 +145,7 @@ if( isset($_POST['autosubs_modifs']) )
   </div>
   </form>
   <div style="text-align1: center; float1: right; width: 100%;">
-    <a href="index.php?mod=dbmf3&amp;tpl=autosubs/step1"
+    <a href="index.php?mod=dbmf3_asub&amp;tpl=step1"
        class="btn btn-success">'._G('DBMF_autosubs_restart').'
     </a>
   </div>

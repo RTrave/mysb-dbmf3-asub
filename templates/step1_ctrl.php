@@ -14,9 +14,9 @@ defined('_MySBEXEC') or die;
 
 global $app;
 
-if(MySBConfigHelper::Value('dbmf_autosubs_anonaccess','dbmf3')!=1)
+if(MySBConfigHelper::Value('dbmf_autosubs_anonaccess','dbmf3_asub')!=1)
   if(!MySBRoleHelper::checkAccess('dbmf_autosubs')) return;
 
-include( _pathT('autosubs/step1','dbmf3') );
+include( _pathT('step1','dbmf3_asub') );
 
 ?>

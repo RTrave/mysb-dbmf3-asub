@@ -43,7 +43,7 @@ if( isset($_POST['autosubs_modifs']) and $_POST['autosubs_modifs']!='' ) {
             if($blockref->autosubs==1)
                 $contact_datas[$blockref->keyname] = $blockref->htmlProcessValue($as_id.'blockref');
         }
-        $bradd = MySBConfigHelper::Value('dbmf_autosubs_blockref','dbmf3');
+        $bradd = MySBConfigHelper::Value('dbmf_autosubs_blockref','dbmf3_asub');
         if( $bradd!='' )
             $contact_datas[$bradd] = 1;
         $contact->update($contact_datas);
@@ -51,11 +51,11 @@ if( isset($_POST['autosubs_modifs']) and $_POST['autosubs_modifs']!='' ) {
         $ntf_names .= '<br>'.$contact->lastname.' '.$contact->firstname;
         $app->pushMessage(_G('DBMF_contact_modified'));
     }
-    if( MySBConfigHelper::Value('dbmf_autosubs_mailconfirm','dbmf3')=='1' ) {
+    if( MySBConfigHelper::Value('dbmf_autosubs_mailconfirm','dbmf3_asub')=='1' ) {
         $ntf_mail = new MySBMail('autosubs','dbmf3_asub');
         $ntf_mail->addTO( $ntf_mails, '');
-        if( MySBConfigHelper::Value('dbmf_autosubs_mailaddress','dbmf3')!='' )
-          $ntf_mail->addTO( MySBConfigHelper::Value('dbmf_autosubs_mailaddress','dbmf3'), '');
+        if( MySBConfigHelper::Value('dbmf_autosubs_mailaddress','dbmf3_asub')!='' )
+          $ntf_mail->addTO( MySBConfigHelper::Value('dbmf_autosubs_mailaddress','dbmf3_asub'), '');
         //$ntf_mail->data['subject'] = "New auto-subscription";
         $ntf_mail->data['body'] = $ntf_names;
         $ntf_mail->send();
@@ -64,11 +64,10 @@ if( isset($_POST['autosubs_modifs']) and $_POST['autosubs_modifs']!='' ) {
 
 if( isset($_POST['email'.$pid]) ) {
 if( empty($_POST['email'.$pid]) ) {
-    $app->pushMessage(_G('DBMF_addcontact_lastname_required')); // TODO: bad handling
     echo '<html>
 <head>
 <title>Redir</title>
-<meta http-equiv="refresh" content="0; URL=index.php?mod=dbmf3&amp;tpl=autosubs/step1">
+<meta http-equiv="refresh" content="0; URL=index.php?mod=dbmf3_asub&amp;tpl=step1">
 </head>
 <body>
 </body>
@@ -84,14 +83,14 @@ if( empty($_POST['email'.$pid]) ) {
     $app->dbmf_req_wcheck = MySBDB::query($sql_wcheck.$sql_wcheck_cond.
         ' ORDER by id DESC;',
         "autosubs2_ctrl.php",
-        true, "dbmf3");
+        true, "dbmf3_asub");
 
     if(MySBDB::num_rows($app->dbmf_req_wcheck)==0) {
         $contact = MySBDBMFContactHelper::create('', '', $_POST['email'.$pid]);
         $app->dbmf_req_wcheck = MySBDB::query($sql_wcheck.$sql_wcheck_cond.
         ' ORDER by lastname;',
         "autosubs2_ctrl.php",
-        true, "dbmf3");
+        true, "dbmf3_asub");
     }
 }
 }
@@ -107,10 +106,10 @@ if( isset($_POST['new_email'] ) ) {
     $app->dbmf_req_wcheck = MySBDB::query($sql_wcheck.$sql_wcheck_cond.
         ' ORDER by lastname;',
         "autosubs2_ctrl.php",
-        true, "dbmf3");
+        true, "dbmf3_asub");
     $_POST['email'.$pid] = $_POST['new_email'];
 }
 
-include( _pathT('autosubs/step2','dbmf3') );
+include( _pathT('step2','dbmf3_asub') );
 
 ?>
