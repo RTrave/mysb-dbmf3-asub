@@ -48,7 +48,9 @@ if( isset($_POST['autosubs_modifs']) and $_POST['autosubs_modifs']!='' ) {
             $contact_datas[$bradd] = 1;
         $contact->update($contact_datas);
         //$ntf_mails .=
-        $ntf_names .= '<br>'.$contact->lastname.' '.$contact->firstname;
+        $ntf_names .= '
+'._G('DBMF_common_lastname').': <b>'.$contact->lastname.'</b><br>
+'._G('DBMF_common_firstname').': <b>'.$contact->firstname.'</b>';
         $app->pushMessage(_G('DBMF_contact_modified'));
     }
     if( MySBConfigHelper::Value('dbmf_autosubs_mailconfirm','dbmf3_asub')=='1' ) {
