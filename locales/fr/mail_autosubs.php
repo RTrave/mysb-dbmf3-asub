@@ -3,10 +3,10 @@
 
     $mail->subject = _G('DBMF_autosubs_notifysubj');
 
-    $mail->body = 'Hi,<br><br>
-You have been registred as contact:<br>
+    $mail->body = 'Bonjour,<br><br>
+vous vous êtes inscrit en tant que:<br>
 '.$mail->data['body'].'<br>
 <br>
-thanks.';
+merci et à très bientôt.';
 
 ?>
