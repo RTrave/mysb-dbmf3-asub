@@ -16,6 +16,7 @@ class MySBModule_dbmf3_asub {
 
     public $lname = 'dbmf3_asub';
     public $version = 1;
+    public $release_version = '1a';
     public $homelink = 'http://phpmysandbox.abadcafe.org';
     public $require = array(
         'core' => 7,
