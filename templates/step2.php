@@ -99,13 +99,17 @@ while($data_wcheck = MySBDB::fetch_array($app->dbmf_req_wcheck)) {
     if($blockref->autosubs==1 and !$br_locked) {
       echo '
   <div class="row label">';
-      if( !isset($_POST['autosubs_modifs']) )
+      if( !isset($_POST['autosubs_modifs']) ) {
+        if( $blockref->type==MYSB_VALUE_TYPE_DATE or
+            $blockref->type==MYSB_VALUE_TYPE_DATETIME ) {
+          $blockref->parameter = explode(',',$blockref->params);
+        }
         echo $blockref->innerRow( $data_wcheck['id'].'blockref',
                                   $data_wcheck[$blockref->keyname],
                                   true,
                                   _G($blockref->lname),
                                   $blockref->infos );
-      else
+      } else
         echo $blockref->innerRow( $data_wcheck['id'].'blockref',
                                   $data_wcheck[$blockref->keyname],
                                   true,
