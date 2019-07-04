@@ -20,7 +20,7 @@ class MySBModule_dbmf3_asub {
     public $homelink = 'http://phpmysandbox.abadcafe.org';
     public $require = array(
         'core' => 7,
-        'dbmf3' => 21
+        'dbmf3' => 22
         );
 
     public function create() {
