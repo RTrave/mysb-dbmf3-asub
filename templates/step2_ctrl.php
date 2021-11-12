@@ -46,6 +46,9 @@ if( isset($_POST['autosubs_modifs']) and $_POST['autosubs_modifs']!='' ) {
         $bradd = MySBConfigHelper::Value('dbmf_autosubs_blockref','dbmf3_asub');
         if( $bradd!='' )
             $contact_datas[$bradd] = 1;
+        $datebr = MySBConfigHelper::Value('dbmf_autosubs_datebr','dbmf3_asub');
+        if( $datebr!='' )
+            $contact_datas[$datebr] = $today_date;
         $contact->update($contact_datas);
         //$ntf_mails .=
         $ntf_names .= '

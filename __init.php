@@ -15,8 +15,8 @@ defined('_MySBEXEC') or die;
 class MySBModule_dbmf3_asub {
 
     public $lname = 'dbmf3_asub';
-    public $version = 1;
-    public $release_version = '1a';
+    public $version = 2;
+    public $release_version = '2a';
     public $homelink = 'http://phpmysandbox.abadcafe.org';
     public $require = array(
         'core' => 7,
@@ -74,10 +74,16 @@ class MySBModule_dbmf3_asub {
 
     }
 
+    public function init2() {
+        global $app;
+        MySBConfigHelper::create('dbmf_autosubs_datebr','',MYSB_VALUE_TYPE_VARCHAR512,
+            'Datetime blockRef filled with date when autosubs', 'dbmf3_asub');
+    }
 
     public function uninit() {
         global $app;
         MySBRoleHelper::delete('dbmf_autosubs');
+        MySBConfigHelper::delete('dbmf_autosubs_datebr','dbmf3_asub');
         MySBConfigHelper::delete('dbmf_autosubs_blockref','dbmf3_asub');
         MySBConfigHelper::delete('dbmf_autosubs_blockreflock','dbmf3_asub');
         MySBConfigHelper::delete('dbmf_autosubs_mailconfirm','dbmf3_asub');
@@ -89,3 +95,4 @@ class MySBModule_dbmf3_asub {
 
 }
 ?>
+
