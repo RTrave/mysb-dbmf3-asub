@@ -71,6 +71,19 @@ if(isset($_POST['dbmf_autosubs'])) {
     }
 }
 
+$bradd = MySBConfigHelper::Value('dbmf_autosubs_blockref','dbmf3_asub');
+$datebr = MySBConfigHelper::Value('dbmf_autosubs_datebr','dbmf3_asub');
+
+if(isset($_POST['dbmf_autosubs_resetblockref'])) {
+    $pinbr_sql = "UPDATE ".MySB_DBPREFIX."dbmfcontacts SET ".$bradd."='';";
+    $pinbr_req = MySBDB::query( $pinbr_sql );
+}
+
+if(isset($_POST['dbmf_autosubs_resetdatebr'])) {
+    $datebr_sql = "UPDATE ".MySB_DBPREFIX."dbmfcontacts SET ".$datebr."='0000-00-00 00:00:00';";
+    $datebr_req = MySBDB::query( $datebr_sql );
+}
+
 include( _pathT('admin','dbmf3_asub') );
 
 ?>
