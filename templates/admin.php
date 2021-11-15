@@ -1,7 +1,7 @@
 <?php
 /***************************************************************************
  *
- *   phpMySandBox/DBMF3 module - TRoman<abadcafe@free.fr> - 2012
+ *   phpMySandBox/DBMF3AutoSubs - RTrave<roman.trave@abadcafe.org> - 2018
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 2 of the License', or
@@ -52,7 +52,7 @@ echo '
 <div class="content">
   <h1 id="autosubs-reset">'._G('DBMF_autosubs_reset').'</h1>';
 
-if( $bradd!='' ) 
+if( $bradd!='' )
   echo '
 <form action="'.$httpbase.'#autosubs-reset" method="post"
         OnSubmit="return mysb_confirm(\'Reset autosubs pin in ALL contacts ?\')">
@@ -76,7 +76,7 @@ else
     <div class="col-sm-3"></div>
   </div>';
 
-if( $datebr!='' ) 
+if( $datebr!='' )
   echo '
 <form action="'.$httpbase.'#autosubs-reset" method="post"
         OnSubmit="return mysb_confirm(\'Reset autosubs dates in ALL contacts ?\')">
