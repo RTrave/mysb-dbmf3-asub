@@ -17,10 +17,10 @@ class MySBModule_dbmf3_asub {
     public $lname = 'dbmf3_asub';
     public $version = 2;
     public $release_version = '2b';
-    public $homelink = 'http://phpmysandbox.abadcafe.org';
+    public $homelink = 'https://github.com/RTrave/mysb-dbmf3-asub';
     public $require = array(
         'core' => 7,
-        'dbmf3' => 22
+        'dbmf3' => 23
         );
 
     public function create() {
