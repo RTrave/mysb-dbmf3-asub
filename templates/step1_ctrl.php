@@ -7,16 +7,17 @@
  *   the Free Software Foundation; either version 2 of the License', or
  *   ('at your option) any later version.
  *
-***************************************************************************/
+ ***************************************************************************/
 
 // No direct access.
 defined('_MySBEXEC') or die;
 
 global $app;
 
-if(MySBConfigHelper::Value('dbmf_autosubs_anonaccess','dbmf3_asub')!=1)
-  if(!MySBRoleHelper::checkAccess('dbmf_autosubs')) return;
+if (MySBConfigHelper::Value('dbmf_autosubs_anonaccess', 'dbmf3_asub') != 1)
+  if (!MySBRoleHelper::checkAccess('dbmf_autosubs'))
+    return;
 
-include( _pathT('step1','dbmf3_asub') );
+include(_pathT('step1', 'dbmf3_asub'));
 
 ?>

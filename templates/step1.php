@@ -7,7 +7,7 @@
  *   the Free Software Foundation; either version 2 of the License', or
  *   ('at your option) any later version.
  *
-***************************************************************************/
+ ***************************************************************************/
 
 // No direct access.
 defined('_MySBEXEC') or die;
@@ -15,7 +15,7 @@ defined('_MySBEXEC') or die;
 global $app;
 
 // Process id
-$pid = rand(10000,9999999);
+$pid = rand(10000, 9999999);
 
 /*
 echo '
@@ -40,20 +40,20 @@ echo '
 <div class="col-md-8 col-unique">
 <div class="content">
 
-  <h1 class="bg-primary">'.MySBConfigHelper::Value('website_name').'</h1>
+  <h1 class="bg-primary">' . MySBConfigHelper::Value('website_name') . '</h1>
 
-<form action="index.php?mod=dbmf3_asub&amp;tpl=step2&amp;contact_id=-1&amp;pid='.$pid.'"
+<form action="index.php?mod=dbmf3_asub&amp;tpl=step2&amp;contact_id=-1&amp;pid=' . $pid . '"
       method="post">
 
-  <h2>'._G('DBMF_autosubs_newcontact').'</h2>
+  <h2>' . _G('DBMF_autosubs_newcontact') . '</h2>
 
   <div class="row label">
-    <label class="col-sm-4" for="email'.$pid.'">
+    <label class="col-sm-4" for="email' . $pid . '">
       Email
     </label>
     <div class="col-sm-8">
       <input type="email" autofocus
-             name="email'.$pid.'" id="email'.$pid.'"
+             name="email' . $pid . '" id="email' . $pid . '"
              maxlength="64" value="">
     </div>
   </div>
@@ -62,7 +62,7 @@ echo '
     <div class="col-sm-3"></div>
     <div class="col-sm-6">
       <input type="submit" class="btn-primary"
-             value="'._G('DBMF_autosubs_submitmail').'">
+             value="' . _G('DBMF_autosubs_submitmail') . '">
     </div>
     <div class="col-sm-3"></div>
   </div>
