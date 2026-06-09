@@ -33,6 +33,11 @@ if (isset($_POST['dbmf_autosubs'])) {
     }
 }
 
+if (isset($_POST["dbmf_autosubs_denytext"])) {
+    // echo $_POST["message_deny"]."br";
+    $config_deny = MySBConfigHelper::get("dbmf_autosubs_denytext","dbmf3_asub");
+    $config_deny->setValue($_POST["message_deny"]);
+}
 
 if (isset($_POST["dbmf_autosubs_blockedit"])) {
     $ruleblocks = MySBDBMFBlockHelper::load();

@@ -142,10 +142,17 @@ class MySBModule_dbmf3_asub extends MySBModuleHelper
 
     public function init3()
     {
+        MySBConfigHelper::create(
+            'dbmf_autosubs_denytext',
+            '',
+            MYSB_VALUE_TYPE_TEXT,
+            'Message when access is deny',
+            'dbmf3_asub'
+        );
         $req1 = MySBDB::query('CREATE TABLE '.MySB_DBPREFIX.'dbmfasubblocks ( '.
             'id int PRIMARY KEY NOT NULL AUTO_INCREMENT, '.
             'block_id int,'.
-            'comments varchar(1024), '.
+            'comments varchar(2048), '.
             'sel_max int )
             DEFAULT CHARSET=utf8',
             "__init.php",
@@ -161,6 +168,7 @@ class MySBModule_dbmf3_asub extends MySBModuleHelper
     public function uninit()
     {
         global $app;
+        MySBConfigHelper::delete('dbmf_autosubs_denytext', 'dbmf3_asub');
         MySBRoleHelper::delete('dbmf_autosubs');
         MySBConfigHelper::delete('dbmf_autosubs_datebr', 'dbmf3_asub');
         MySBConfigHelper::delete('dbmf_autosubs_blockref', 'dbmf3_asub');

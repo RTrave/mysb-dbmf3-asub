@@ -51,9 +51,8 @@ echo '
 
 
 
-
 <div class="content">
-  <h1 id="autosubsblocks">' . _G('DBMF_autosubs_blocks') . '</h1>
+  <h1 id="autosubsblocks">' . _G('DBMF_autosubs_denytext') . '</h1>
 
 <form action="' . $httpbase . '#autosubsblocks" method="post">
   <div class="row checkbox-list">';
@@ -61,6 +60,35 @@ echo '
 $area_id = 'editor_id_'.rand(1,999999);
 $editor = new MySBEditor();
 echo $editor->init($area_id,"simple");
+$deny_text = MySBConfigHelper::Value("dbmf_autosubs_denytext","dbmf3_asub");
+
+echo '
+    <div class="col-3">
+        '._G('dbmf_autosubs_denytext_entry').'<br>
+    </div>
+    <div class="col-9">
+        <textarea name="message_deny" rows="3"
+                class="mceEditor" id="'.$area_id.'">'.$deny_text.'</textarea>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-3"></div>
+    <div class="col-sm-6">
+      <input type="hidden" name="dbmf_autosubs_denytext" value="1">
+      <input type="submit" class="btn-primary"
+             value="' . _G('DBMF_autosubs_configsubmit') . '">
+    </div>
+    <div class="col-sm-3"></div>
+  </div>
+</form>
+</div>
+
+<div class="content">
+  <h1 id="autosubsblocks">' . _G('DBMF_autosubs_blocks') . '</h1>
+
+<form action="' . $httpbase . '#autosubsblocks" method="post">
+  <div class="row checkbox-list">';
+
 $ruleblocks = MySBDBMFBlockHelper::load();
 $brules = MySBDBMFASubRuleHelper::blocksLoad();
 foreach($ruleblocks as $ruleblock) {
@@ -73,14 +101,16 @@ foreach($ruleblocks as $ruleblock) {
     echo '
     <h2>'._G($ruleblock->lname).'</h2>
     <div class="row">
-    <div class="col-12">
-        '._G('NAGR_news_body').'<br>
+    <div class="col-3">
+        '._G('DBMF_autosubs_blocks_entry').'<br>
+    </div>
+    <div class="col-9">
         <textarea name="body_'.$ruleblock->id.'" rows="3"
                 class="mceEditor" id="'.$area_id.'">'.$comments.'</textarea>
     </div>
     </div>
     <div class="row">
-    <div class="col-sm-2">
+    <div class="col-sm-3">
         <select name="selectmax_'.$ruleblock->id.'" id="category">
             <option value="0" '.MySBUtil::form_isselected($sel_max,0).'>'._G('DBMF_autosubs_nolimit').'</option>
             <option value="1" '.MySBUtil::form_isselected($sel_max,1).'>1</option>
@@ -89,7 +119,7 @@ foreach($ruleblocks as $ruleblock) {
             <option value="4" '.MySBUtil::form_isselected($sel_max,4).'>4</option>
         </select>
     </div>
-    <label class="col-sm-10" for="category">
+    <label class="col-sm-9" for="category">
         '._G('DBMF_autosubs_selectmax').'
     </label>
     </div>
