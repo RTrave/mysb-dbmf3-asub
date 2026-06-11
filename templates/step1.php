@@ -34,13 +34,19 @@ function LoadMatchContacts() {
 ';
 */
 
+$brules = MySBDBMFASubRuleHelper::blocksLoad();
+$h1_text = $brules[1]->block_comments;
+// $h1_text = MySBConfigHelper::Value("dbmf_autosubs_denytext","dbmf3_asub");
+if($h1_text=="")
+    $h1_text = MySBConfigHelper::Value('website_name');
+
 echo '
 <div id="dbmfAutosubs">
 
 <div class="col-md-8 col-unique">
 <div class="content">
 
-  <h1 class="bg-primary">' . MySBConfigHelper::Value('website_name') . '</h1>
+  <h1 class="bg-primary">' . $h1_text . '</h1>
 
 <form action="index.php?mod=dbmf3_asub&amp;tpl=step2&amp;contact_id=-1&amp;pid=' . $pid . '"
       method="post">

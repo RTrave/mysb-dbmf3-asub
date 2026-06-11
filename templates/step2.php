@@ -16,62 +16,69 @@ global $app;
 
 // Process id
 if (isset($_GET['pid']))
-  $pid = $_GET['pid'];
+    $pid = $_GET['pid'];
 else
-  $pid = '';
+    $pid = '';
+
+$brules = MySBDBMFASubRuleHelper::blocksLoad();
+$erules = MySBDBMFASubRuleHelper::load();
+$h1_text = $brules[1]->block_comments;
+// $h1_text = MySBConfigHelper::Value("dbmf_autosubs_denytext","dbmf3_asub");
+if ($h1_text == "")
+    $h1_text = MySBConfigHelper::Value('website_name');
 
 echo '
 <div id="dbmfAutosubs">';
 
 if (!isset($_POST['autosubs_modifs']))
-  echo '
+    echo '
 <form action="index.php?mod=dbmf3_asub&amp;tpl=step2"
       method="post">';
 
 $classdisabled = '';
 if (isset($_POST['autosubs_modifs']))
-  $classdisabled = ' disabled-elems';
+    $classdisabled = ' disabled-elems';
 echo '
 <div class="col-md-8 col-unique">
 
 <div class="content' . $classdisabled . '">
 
-  <h1 class="bg-primary">' . MySBConfigHelper::Value('website_name') . '</h1>
+  <h1 class="bg-primary">' . $h1_text . '</h1>
 ';
 $autosubs_id = '';
 $bordertop = '';
 
 while ($data_wcheck = MySBDB::fetch_array($app->dbmf_req_wcheck)) {
 
-  $br_locked = false;
-  $br_locked_txt = '';
-  $brlock = MySBConfigHelper::Value('dbmf_autosubs_blockreflock', 'dbmf3_asub');
-  if ($brlock != '' and $data_wcheck[$brlock] != 0) {
-    $br_locked = true;
-    $br_locked_txt = ' <i>(read-only)</i>';
-  } else {
-    if ($autosubs_id != '') {
-      $autosubs_id .= ',';
-      //$bordertop = 'border-top';
+    $br_locked = false;
+    $br_locked_txt = '';
+    $brlock = MySBConfigHelper::Value('dbmf_autosubs_blockreflock', 'dbmf3_asub');
+    if ($brlock != '' and $data_wcheck[$brlock] != 0) {
+        $br_locked = true;
+        $br_locked_txt = ' <i>(read-only)</i>';
+    } else {
+        if ($autosubs_id != '') {
+            $autosubs_id .= ',';
+            //$bordertop = 'border-top';
+        }
+        $autosubs_id .= $data_wcheck['id'];
     }
-    $autosubs_id .= $data_wcheck['id'];
-  }
-  $mails = str_replace(',', '<br>', $data_wcheck['mail']);
-  if ($br_locked or isset($_POST['autosubs_modifs']))
-    $isDisabled = 'disabled="disabled"';
-  else
-    $isDisabled = '';
+    $mails = str_replace(',', '<br>', $data_wcheck['mail']);
+    if ($br_locked or isset($_POST['autosubs_modifs']))
+        $isDisabled = 'disabled="disabled"';
+    else
+        $isDisabled = '';
 
-  echo '
+    echo '
   <h2 class="border-top" id="contact' . $data_wcheck['id'] . '">' . $mails . $br_locked_txt . '</h2>
 
   <div class="row label">
     <label class="col-sm-4" for="' . $data_wcheck['id'] . 'lastname">
       ' . _G('DBMF_common_lastname') . '';
-  if (MySBConfigHelper::Value('dbmf_ln_infos', 'dbmf3') != '')
-    echo '<br>
+    if (MySBConfigHelper::Value('dbmf_ln_infos', 'dbmf3') != '')
+        echo '<br>
       <span class="help">' . MySBConfigHelper::Value('dbmf_ln_infos', 'dbmf3') . '</span>';
-  echo '
+    echo '
     </label>
     <div class="col-sm-8">
       <input type="text" name="' . $data_wcheck['id'] . 'lastname"
@@ -83,10 +90,10 @@ while ($data_wcheck = MySBDB::fetch_array($app->dbmf_req_wcheck)) {
   <div class="row label">
     <label class="col-sm-4" for="' . $data_wcheck['id'] . 'firstname">
       ' . _G('DBMF_common_firstname') . '';
-  if (MySBConfigHelper::Value('dbmf_fn_infos', 'dbmf3') != '')
-    echo '<br>
+    if (MySBConfigHelper::Value('dbmf_fn_infos', 'dbmf3') != '')
+        echo '<br>
       <span class="help">' . MySBConfigHelper::Value('dbmf_fn_infos', 'dbmf3') . '</span>';
-  echo '
+    echo '
     </label>
     <div class="col-sm-8">
       <input type="text" name="' . $data_wcheck['id'] . 'firstname"
@@ -95,45 +102,131 @@ while ($data_wcheck = MySBDB::fetch_array($app->dbmf_req_wcheck)) {
     </div>
   </div>';
 
-  $blockrefs = MySBDBMFBlockRefHelper::load();
-  foreach ($blockrefs as $blockref) {
-    if ($blockref->autosubs == 1 and !$br_locked) {
-      echo '
-  <div class="row label">';
-      if (!isset($_POST['autosubs_modifs'])) {
-        if (
-          $blockref->type == MYSB_VALUE_TYPE_DATE or
-          $blockref->type == MYSB_VALUE_TYPE_DATETIME
-        ) {
-          $blockref->parameter = explode(',', $blockref->params);
+    $blocks = MySBDBMFBlockHelper::load();
+    foreach ($blocks as $block) {
+        $blockrefs = $block->loadBlockRefs();
+        $nb_asub_actives = 0;
+        foreach ($blockrefs as $blockref) {
+            if ($blockref->autosubs == 1 and !$br_locked)
+                $nb_asub_actives++;
         }
-        echo $blockref->innerRow(
-          $data_wcheck['id'] . 'blockref',
-          $data_wcheck[$blockref->keyname],
-          true,
-          _G($blockref->lname),
-          $blockref->infos
-        );
-      } else
-        echo $blockref->innerRow(
-          $data_wcheck['id'] . 'blockref',
-          $data_wcheck[$blockref->keyname],
-          true,
-          _G($blockref->lname),
-          $blockref->infos,
-          true
-        );
-      echo '
+        if (!$nb_asub_actives)
+            continue;
+        $noinput = '';
+        if ($brules[$block->id]->select_max < 0)
+            $noinput = 'noinput';
+
+        if ($block->id != 1)
+            echo '
+    <h2 class="border-top">
+        ' . _G($block->lname) . ' (' . $brules[$block->id]->select_max . ')<br>
+        <small><i>' . $brules[$block->id]->block_comments . '</i></small>
+    </h2>';
+
+        // }
+        // $blockrefs = MySBDBMFBlockRefHelper::load();
+
+        foreach ($blockrefs as $blockref) {
+            if ($blockref->autosubs == 1 and !$br_locked) {
+                echo '
+  <div class="row label ' . $noinput . '">';
+                if (!isset($_POST['autosubs_modifs'])) {
+                    if (
+                        $blockref->type == MYSB_VALUE_TYPE_DATE or
+                        $blockref->type == MYSB_VALUE_TYPE_DATETIME
+                    ) {
+                        $blockref->parameter = explode(',', $blockref->params);
+                    }
+                    echo $blockref->innerRow(
+                        $data_wcheck['id'] . 'blockref' . $block->id,
+                        $data_wcheck[$blockref->keyname],
+                        true,
+                        _G($blockref->lname),
+                        $blockref->infos
+                    );
+                } else
+                    echo $blockref->innerRow(
+                        $data_wcheck['id'] . 'blockref' . $block->id,
+                        $data_wcheck[$blockref->keyname],
+                        true,
+                        _G($blockref->lname),
+                        $blockref->infos,
+                        true
+                    );
+                echo '
   </div>';
+            }
+        }
+
+        foreach ($erules as $erule) {
+            foreach ($erule->rulebrs as $rulebr_name) {
+                $rulebr = MySBDBMFBlockRefHelper::getByKeyname($rulebr_name);
+                if ($rulebr->block_id == $block->id && $data_wcheck[$rulebr_name] == 1) {
+                    foreach ($erule->rulebrs as $rulebr_unactive) {
+                        if ($rulebr_unactive != $rulebr_name) {
+                            // echo $rulebr_unactive . '-';
+                            echo "
+<script>
+    $('#" . $autosubs_id . "blockref" . $block->id . $rulebr_unactive . "').attr('disabled', 'disabled');
+</script>
+                                    ";
+                        }
+                    }
+                }
+            }
+        }
+        if ($brules[$block->id]->select_max >= 1) {
+            echo "
+<script>
+var limit" . $block->id . " = " . $brules[$block->id]->select_max . ";
+$('input.mysbValue-checkbox').on('change', function(evt) {
+   //console.log('CheckChange');
+   if($(\"input[name^='" . $autosubs_id . "blockref" . $block->id . "']:checked\").length > limit" . $block->id . ") {
+       this.checked = false;
+   }
+});
+</script>
+";
+        }
     }
-  }
 }
 echo '
 </div>
 </div>';
 
+foreach ($erules as $erule) {
+    echo "
+<script>";
+    foreach ($erule->rulebrs as $rulebr_name) {
+        $rulebr = MySBDBMFBlockRefHelper::getByKeyname($rulebr_name);
+        echo "
+$(\"input[name^='" . $autosubs_id . "blockref" . $rulebr->block_id . $rulebr->keyname . "']\").on('change', function(evt) {
+    //console.log('CheckChange');
+    if(this.checked) {";
+        foreach ($erule->rulebrs as $rulebrT_name) {
+            $rulebrT = MySBDBMFBlockRefHelper::getByKeyname($rulebrT_name);
+            if ($rulebrT->keyname != $rulebr->keyname)
+                echo "
+        $('#" . $autosubs_id . "blockref" . $rulebrT->block_id . $rulebrT->keyname . "').attr('disabled', 'disabled');";
+        }
+        echo "
+    } else {";
+        foreach ($erule->rulebrs as $rulebrT_name) {
+            $rulebrT = MySBDBMFBlockRefHelper::getByKeyname($rulebrT_name);
+            echo "
+        $('#" . $autosubs_id . "blockref" . $rulebrT->block_id . $rulebrT->keyname . "').removeAttr('disabled');";
+        }
+        echo "
+    }
+});";
+    }
+    echo "
+</script>
+";
+}
+
 if (!isset($_POST['autosubs_modifs']))
-  echo '
+    echo '
 <div class="actions">
   <div style="text-align1: center; float1: right;">
     <input type="hidden" name="autosubs_modifs" value="' . $autosubs_id . '">
@@ -144,9 +237,11 @@ if (!isset($_POST['autosubs_modifs']))
 </div>
 </form>';
 
-if (isset($_POST['autosubs_modifs']))
-  echo '
-<div class="actions">
+if (isset($_POST['autosubs_modifs'])) {
+    echo '
+<div class="actions">';
+    if (MySBConfigHelper::Value("dbmf_autosubs_multiples", "dbmf3_asub") == 1) {
+        echo '
   <form action="index.php?mod=dbmf3_asub&amp;tpl=step2"
         method="post">
   <div style="text-align: center; float: right;">
@@ -154,13 +249,16 @@ if (isset($_POST['autosubs_modifs']))
     <input type="submit" class="btn-primary"
            value="' . _G('DBMF_autosubs_submitadd') . '">
   </div>
-  </form>
+  </form>';
+    }
+    echo '
   <div style="text-align1: center; float1: right; width: 100%;">
     <a href="index.php?mod=dbmf3_asub&amp;tpl=step1"
        class="btn btn-success">' . _G('DBMF_autosubs_restart') . '
     </a>
   </div>
 </div>';
+}
 
 echo '
 </div>';

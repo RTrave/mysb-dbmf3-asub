@@ -142,6 +142,7 @@ class MySBModule_dbmf3_asub extends MySBModuleHelper
 
     public function init3()
     {
+        global $app;
         MySBConfigHelper::create(
             'dbmf_autosubs_denytext',
             '',
@@ -163,11 +164,19 @@ class MySBModule_dbmf3_asub extends MySBModuleHelper
             DEFAULT CHARSET=utf8',
             "__init.php",
             false, "dbmf3_asub");
+        MySBConfigHelper::create(
+            'dbmf_autosubs_multiples',
+            '',
+            MYSB_VALUE_TYPE_BOOL,
+            'Can subscriber save another contact with same mail',
+            'dbmf3_asub'
+        );
     }
 
     public function uninit()
     {
         global $app;
+        MySBConfigHelper::delete('dbmf_autosubs_multiples', 'dbmf3_asub');
         MySBConfigHelper::delete('dbmf_autosubs_denytext', 'dbmf3_asub');
         MySBRoleHelper::delete('dbmf_autosubs');
         MySBConfigHelper::delete('dbmf_autosubs_datebr', 'dbmf3_asub');

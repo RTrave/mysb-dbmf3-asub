@@ -112,6 +112,7 @@ foreach($ruleblocks as $ruleblock) {
     <div class="row">
     <div class="col-sm-3">
         <select name="selectmax_'.$ruleblock->id.'" id="category">
+            <option value="-1" '.MySBUtil::form_isselected($sel_max,-1).'>No selection</option>
             <option value="0" '.MySBUtil::form_isselected($sel_max,0).'>'._G('DBMF_autosubs_nolimit').'</option>
             <option value="1" '.MySBUtil::form_isselected($sel_max,1).'>1</option>
             <option value="2" '.MySBUtil::form_isselected($sel_max,2).'>2</option>

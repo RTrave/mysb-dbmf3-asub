@@ -29,7 +29,7 @@ if (isset($_POST['dbmf_autosubs'])) {
         if (isset($_POST[$blockref->keyname]) and $_POST[$blockref->keyname] != $autosubs)
             $blockref->update(array('autosubs' => '1'));
         if (!isset($_POST[$blockref->keyname]) and $autosubs == 'on')
-            $blockref->update(array('autosubs' => ''));
+            $blockref->update(array('autosubs' => '0'));
     }
 }
 

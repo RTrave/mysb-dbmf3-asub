@@ -31,7 +31,9 @@ if (isset($_POST['autosubs_modifs']) and $_POST['autosubs_modifs'] != '') {
     $autosubs_ids = explode(',', $_POST['autosubs_modifs']);
     $ntf_mails = $_POST['email'];
     $ntf_names = '';
+    $mail_recap = '<br>';
     $blockrefs = MySBDBMFBlockRefHelper::load();
+    $brules_ctrl = MySBDBMFASubRuleHelper::blocksLoad();
     foreach ($autosubs_ids as $as_id) {
 
         $contact = new MySBDBMFContact($as_id);
@@ -42,8 +44,31 @@ if (isset($_POST['autosubs_modifs']) and $_POST['autosubs_modifs'] != '') {
             'date_modif' => $today_date
         );
         foreach ($blockrefs as $blockref) {
-            if ($blockref->autosubs == 1)
-                $contact_datas[$blockref->keyname] = $blockref->htmlProcessValue($as_id . 'blockref');
+            if (
+                ($blockref->autosubs == 1 && $blockref->isActive()) &&
+                ($brules_ctrl[$blockref->block_id]->select_max >= 0)
+            ) {
+                $mkeyname = $blockref->keyname;
+                $mkeyvalue = $blockref->htmlProcessValue($as_id . 'blockref' . $blockref->block_id);
+                if ($contact->$mkeyname == '')
+                    $contact->$mkeyname = 0;
+                // $mail_recap .= $brules_ctrl[$blockref->block_id]->select_max.'/';
+                if ($blockref->block_id != 1) {
+                    if ($contact->$mkeyname != $mkeyvalue) {
+                        if ($mkeyvalue == 1)
+                            $mail_recap .= '<br>Nouvelle inscription: <b>' . $blockref->lname . '</b>';
+                        else
+                            $mail_recap .= '<br>Désinscription: <b>' . $blockref->lname . '</b>';
+                    }
+                    if ($contact->$mkeyname == $mkeyvalue && $mkeyvalue == 1) {
+                        $mail_recap .= '<br>Inscription initiale: <b>' . $blockref->lname . '</b>';
+                    }
+                }
+                $contact_datas[$blockref->keyname] =
+                    $blockref->htmlProcessValue($as_id . 'blockref' . $blockref->block_id);
+                // echo $contact_datas[$blockref->keyname] . "/" .
+                //     $as_id . 'blockref' . $blockref->block_id . "<br>";
+            }
         }
         // Set autosub blockref and date if exists
         $bradd = MySBConfigHelper::Value('dbmf_autosubs_blockref', 'dbmf3_asub');
@@ -68,7 +93,7 @@ if (isset($_POST['autosubs_modifs']) and $_POST['autosubs_modifs'] != '') {
         if (MySBConfigHelper::Value('dbmf_autosubs_mailaddress', 'dbmf3_asub') != '')
             $ntf_mail->addTO(MySBConfigHelper::Value('dbmf_autosubs_mailaddress', 'dbmf3_asub'), '');
         //$ntf_mail->data['subject'] = "New auto-subscription";
-        $ntf_mail->data['body'] = $ntf_names;
+        $ntf_mail->data['body'] = $ntf_names . $mail_recap;
         $ntf_mail->send();
     }
 }
