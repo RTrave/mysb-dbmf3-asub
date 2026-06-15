@@ -16,7 +16,7 @@ class MySBModule_dbmf3_asub extends MySBModuleHelper
 {
 
     public $lname = 'dbmf3_asub';
-    public $version = 3;
+    public $version = 4;
     public $release_version = '2b';
     public $homelink = 'https://github.com/RTrave/mysb-dbmf3-asub';
     public $require = array(
@@ -45,6 +45,9 @@ class MySBModule_dbmf3_asub extends MySBModuleHelper
             "dbmf3_asub"
         );
         $req = MySBDB::query('DROP TABLE '.MySB_DBPREFIX.'dbmfasubrules',
+            "__init.php",
+            false, "dbmf3_asub");
+        $req = MySBDB::query('DROP TABLE '.MySB_DBPREFIX.'dbmfasubblocks',
             "__init.php",
             false, "dbmf3_asub");
 
@@ -173,9 +176,31 @@ class MySBModule_dbmf3_asub extends MySBModuleHelper
         );
     }
 
+    public function init4()
+    {
+        global $app;
+        MySBConfigHelper::create(
+            'dbmf_autosubs_datestart',
+            '',
+            MYSB_VALUE_TYPE_DATETIME,
+            'Starting date inscriptions',
+            'dbmf3_asub'
+        );
+        MySBConfigHelper::create(
+            'dbmf_autosubs_datestop',
+            '',
+            MYSB_VALUE_TYPE_DATETIME,
+            'Stoping date inscriptions',
+            'dbmf3_asub'
+        );
+    }
+
+
     public function uninit()
     {
         global $app;
+        MySBConfigHelper::delete('dbmf_autosubs_datestart', 'dbmf3_asub');
+        MySBConfigHelper::delete('dbmf_autosubs_datestop', 'dbmf3_asub');
         MySBConfigHelper::delete('dbmf_autosubs_multiples', 'dbmf3_asub');
         MySBConfigHelper::delete('dbmf_autosubs_denytext', 'dbmf3_asub');
         MySBRoleHelper::delete('dbmf_autosubs');
