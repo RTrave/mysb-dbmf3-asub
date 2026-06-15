@@ -168,6 +168,7 @@ while ($data_wcheck = MySBDB::fetch_array($app->dbmf_req_wcheck)) {
                             echo "
 <script>
     $('#" . $autosubs_id . "blockref" . $block->id . $rulebr_unactive . "').attr('disabled', 'disabled');
+    $('#" . $autosubs_id . "blockref" . $block->id . $rulebr_unactive . "').parent().attr('style', 'background-color: #ffdada;');
 </script>
                                     ";
                         }
@@ -183,6 +184,7 @@ $('input.mysbValue-checkbox').on('change', function(evt) {
    //console.log('CheckChange');
    if($(\"input[name^='" . $autosubs_id . "blockref" . $block->id . "']:checked\").length > limit" . $block->id . ") {
        this.checked = false;
+
    }
 });
 </script>
@@ -207,14 +209,16 @@ $(\"input[name^='" . $autosubs_id . "blockref" . $rulebr->block_id . $rulebr->ke
             $rulebrT = MySBDBMFBlockRefHelper::getByKeyname($rulebrT_name);
             if ($rulebrT->keyname != $rulebr->keyname)
                 echo "
-        $('#" . $autosubs_id . "blockref" . $rulebrT->block_id . $rulebrT->keyname . "').attr('disabled', 'disabled');";
+        $('#" . $autosubs_id . "blockref" . $rulebrT->block_id . $rulebrT->keyname . "').attr('disabled', 'disabled');
+        $('#" . $autosubs_id . "blockref" . $rulebrT->block_id . $rulebrT->keyname . "').parent().attr('style', 'background-color: #ffdada;');";
         }
         echo "
     } else {";
         foreach ($erule->rulebrs as $rulebrT_name) {
             $rulebrT = MySBDBMFBlockRefHelper::getByKeyname($rulebrT_name);
             echo "
-        $('#" . $autosubs_id . "blockref" . $rulebrT->block_id . $rulebrT->keyname . "').removeAttr('disabled');";
+        $('#" . $autosubs_id . "blockref" . $rulebrT->block_id . $rulebrT->keyname . "').removeAttr('disabled');
+        $('#" . $autosubs_id . "blockref" . $rulebrT->block_id . $rulebrT->keyname . "').parent().removeAttr('style');";
         }
         echo "
     }
