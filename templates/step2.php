@@ -119,7 +119,7 @@ while ($data_wcheck = MySBDB::fetch_array($app->dbmf_req_wcheck)) {
         if ($block->id != 1)
             echo '
     <h2 class="border-top">
-        ' . _G($block->lname) . ' (' . $brules[$block->id]->select_max . ')<br>
+        ' . _G($block->lname) . '<br>
         <small><i>' . $brules[$block->id]->block_comments . '</i></small>
     </h2>';
 
