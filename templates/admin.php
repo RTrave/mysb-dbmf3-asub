@@ -27,7 +27,8 @@ echo '
 
 $blockrefs = MySBDBMFBlockRefHelper::load();
 foreach ($blockrefs as $blockref) {
-    echo '
+    if($blockref->isActive())
+        echo '
     <label for="' . $blockref->keyname . '" title="' . $blockref->keyname . '">
       <input type="checkbox" name="' . $blockref->keyname . '"
              ' . MySBUtil::form_ischecked($blockref->autosubs, "1") . ' id="' . $blockref->keyname . '">
