@@ -14,9 +14,12 @@ defined('_MySBEXEC') or die;
 
 global $app;
 
-if (MySBConfigHelper::Value('dbmf_autosubs_anonaccess', 'dbmf3_asub') != 1)
-    if (!MySBRoleHelper::checkAccess('dbmf_autosubs'))
+if (MySBConfigHelper::Value('dbmf_autosubs_anonaccess', 'dbmf3_asub') != 1) {
+    if (!MySBRoleHelper::checkAccess('dbmf_autosubs', false)) {
+        $app->displayStopAlert(_G(MySBConfigHelper::Value('dbmf_autosubs_denytext', 'dbmf3_asub')));
         return;
+    }
+}
 
 // Process id
 if (isset($_GET['pid']))
