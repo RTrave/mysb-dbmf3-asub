@@ -17,24 +17,72 @@ global $app;
 $httpbase = 'index.php?tpl=admin/admin&amp;page=admin&amp;module=dbmf3_asub';
 $dbmf_groups = MySBDBMFGroupHelper::load();
 
+$datestart_t = MySBConfigHelper::Value('dbmf_autosubs_datestart', 'dbmf3_asub');
+$date_start = new MySBDateTime($datestart_t);
+$datestop_t = MySBConfigHelper::Value('dbmf_autosubs_datestop', 'dbmf3_asub');
+$date_stop = new MySBDateTime($datestop_t);
 
 echo '
+<div class="content">
+  <h1 id="autosubs">' . _G('DBMF_autosubs_configdates') . '</h1>
+  <div class="row">
+    <div class="col-sm-6">Start date</div>
+    <div class="col-sm-6">
+        ' . $date_start->html() . '</div>
+  </div>
+  <div class="row">
+    <div class="col-sm-6">Stop date</div>
+    <div class="col-sm-6">
+        ' . $date_stop->html() . '</div>
+  </div>
+  <div class="row">
+    <div class="col-sm-3"></div>
+    <div class="col-sm-6">
+      <a class="btn btn-primary center" style="width: 100%; display: inline-block;"
+            href="index.php?tpl=admin/admin&amp;page=main#mod_dbmf3_asub">' . _G('DBMF_autosubs_godates') . '</a>
+    </div>
+    <div class="col-sm-3"></div>
+  </div>
+  ';
+
+
+
+echo '
+</div>
+
 <div class="content">
   <h1 id="autosubs">' . _G('DBMF_autosubs_config') . '</h1>
 
 <form action="' . $httpbase . '#autosubs" method="post">
   <div class="row checkbox-list">';
 
-$blockrefs = MySBDBMFBlockRefHelper::load();
-foreach ($blockrefs as $blockref) {
-    if($blockref->isActive())
-        echo '
+
+$blocks = MySBDBMFBlockHelper::load();
+foreach ($blocks as $block) {
+    echo '
+    <h2>' . _G($block->lname) . '</h2>';
+    $blockrefs = $block->loadBlockRefs();
+    foreach ($blockrefs as $blockref) {
+        if ($blockref->isActive())
+            echo '
     <label for="' . $blockref->keyname . '" title="' . $blockref->keyname . '">
       <input type="checkbox" name="' . $blockref->keyname . '"
              ' . MySBUtil::form_ischecked($blockref->autosubs, "1") . ' id="' . $blockref->keyname . '">
       <i>' . _G($blockref->lname) . '</i>
     </label>';
+    }
 }
+
+// $blockrefs = MySBDBMFBlockRefHelper::load();
+// foreach ($blockrefs as $blockref) {
+//     if ($blockref->isActive())
+//         echo '
+//     <label for="' . $blockref->keyname . '" title="' . $blockref->keyname . '">
+//       <input type="checkbox" name="' . $blockref->keyname . '"
+//              ' . MySBUtil::form_ischecked($blockref->autosubs, "1") . ' id="' . $blockref->keyname . '">
+//       <i>' . _G($blockref->lname) . '</i>
+//     </label>';
+// }
 echo '
   </div>
   <div class="row">
@@ -58,18 +106,18 @@ echo '
 <form action="' . $httpbase . '#autosubsblocks" method="post">
   <div class="row checkbox-list">';
 
-$area_id = 'editor_id_'.rand(1,999999);
+$area_id = 'editor_id_' . rand(1, 999999);
 $editor = new MySBEditor();
-echo $editor->init($area_id,"simple");
-$deny_text = MySBConfigHelper::Value("dbmf_autosubs_denytext","dbmf3_asub");
+echo $editor->init($area_id, "simple");
+$deny_text = MySBConfigHelper::Value("dbmf_autosubs_denytext", "dbmf3_asub");
 
 echo '
     <div class="col-3">
-        '._G('dbmf_autosubs_denytext_entry').'<br>
+        ' . _G('dbmf_autosubs_denytext_entry') . '<br>
     </div>
     <div class="col-9">
         <textarea name="message_deny" rows="3"
-                class="mceEditor" id="'.$area_id.'">'.$deny_text.'</textarea>
+                class="mceEditor" id="' . $area_id . '">' . $deny_text . '</textarea>
     </div>
   </div>
   <div class="row">
@@ -92,37 +140,37 @@ echo '
 
 $ruleblocks = MySBDBMFBlockHelper::load();
 $brules = MySBDBMFASubRuleHelper::blocksLoad();
-foreach($ruleblocks as $ruleblock) {
+foreach ($ruleblocks as $ruleblock) {
     $comments = "";
     $sel_max = 0;
-    if(isset($brules[$ruleblock->id])) {
+    if (isset($brules[$ruleblock->id])) {
         $comments = $brules[$ruleblock->id]->block_comments;
         $sel_max = $brules[$ruleblock->id]->select_max;
     }
     echo '
-    <h2>'._G($ruleblock->lname).'</h2>
+    <h2>' . _G($ruleblock->lname) . '</h2>
     <div class="row">
     <div class="col-3">
-        '._G('DBMF_autosubs_blocks_entry').'<br>
+        ' . _G('DBMF_autosubs_blocks_entry') . '<br>
     </div>
     <div class="col-9">
-        <textarea name="body_'.$ruleblock->id.'" rows="3"
-                class="mceEditor" id="'.$area_id.'">'.$comments.'</textarea>
+        <textarea name="body_' . $ruleblock->id . '" rows="3"
+                class="mceEditor" id="' . $area_id . '">' . $comments . '</textarea>
     </div>
     </div>
     <div class="row">
     <div class="col-sm-3">
-        <select name="selectmax_'.$ruleblock->id.'" id="category">
-            <option value="-1" '.MySBUtil::form_isselected($sel_max,-1).'>No selection</option>
-            <option value="0" '.MySBUtil::form_isselected($sel_max,0).'>'._G('DBMF_autosubs_nolimit').'</option>
-            <option value="1" '.MySBUtil::form_isselected($sel_max,1).'>1</option>
-            <option value="2" '.MySBUtil::form_isselected($sel_max,2).'>2</option>
-            <option value="3" '.MySBUtil::form_isselected($sel_max,3).'>3</option>
-            <option value="4" '.MySBUtil::form_isselected($sel_max,4).'>4</option>
+        <select name="selectmax_' . $ruleblock->id . '" id="category">
+            <option value="-1" ' . MySBUtil::form_isselected($sel_max, -1) . '>No selection</option>
+            <option value="0" ' . MySBUtil::form_isselected($sel_max, 0) . '>' . _G('DBMF_autosubs_nolimit') . '</option>
+            <option value="1" ' . MySBUtil::form_isselected($sel_max, 1) . '>1</option>
+            <option value="2" ' . MySBUtil::form_isselected($sel_max, 2) . '>2</option>
+            <option value="3" ' . MySBUtil::form_isselected($sel_max, 3) . '>3</option>
+            <option value="4" ' . MySBUtil::form_isselected($sel_max, 4) . '>4</option>
         </select>
     </div>
     <label class="col-sm-9" for="category">
-        '._G('DBMF_autosubs_selectmax').'
+        ' . _G('DBMF_autosubs_selectmax') . '
     </label>
     </div>
 ';
@@ -163,7 +211,7 @@ foreach ($rules_a as $rule) {
     </form>
     <div class="col-10">
       <p>';
-    foreach($rule->rulebrs as $rulebr) {
+    foreach ($rule->rulebrs as $rulebr) {
         $bro = MySBDBMFBlockRefHelper::getByKeyname($rulebr);
         echo '
     <label>
@@ -174,8 +222,8 @@ foreach ($rules_a as $rule) {
       <span class="help">' . $rule->id . '</span></p>
     </div>
   <a class="col-1 t-center btn-danger-light"
-     href="'.$httpbase.'&amp;rule_delete='.$rule->id.'#autosubsrules"
-     title="Delete '.$rule->id.'">
+     href="' . $httpbase . '&amp;rule_delete=' . $rule->id . '#autosubsrules"
+     title="Delete ' . $rule->id . '">
     <img src="images/icons/user-trash.png" alt="user-trash">
   </a>
   </div>
