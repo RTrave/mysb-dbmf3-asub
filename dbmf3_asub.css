@@ -42,5 +42,18 @@
   #dbmfAutosubs .actions {
     font-size: 90%;
     right: 5px;
+  } 
+}
+@media (max-width: 768px) {
+  div#mysbMiddle {
+    width: 100%;
+  }  
+  #mysbMiddle .content {
+    border-radius: 0;
+    margin-top: 0;
+  }
+  [class*="col-"] {
+    padding-right: 0;
+    padding-left: 0;
   }
 }
