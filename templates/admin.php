@@ -17,32 +17,87 @@ global $app;
 $httpbase = 'index.php?tpl=admin/admin&amp;page=admin&amp;module=dbmf3_asub';
 $dbmf_groups = MySBDBMFGroupHelper::load();
 
-$datestart_t = MySBConfigHelper::Value('dbmf_autosubs_datestart', 'dbmf3_asub');
-$date_start = new MySBDateTime($datestart_t);
-$datestop_t = MySBConfigHelper::Value('dbmf_autosubs_datestop', 'dbmf3_asub');
-$date_stop = new MySBDateTime($datestop_t);
+$access_c = MySBConfigHelper::get('dbmf_autosubs_anonaccess', 'dbmf3_asub');
+$datestart_c = MySBConfigHelper::get('dbmf_autosubs_datestart', 'dbmf3_asub');
+// $datestart_t = MySBConfigHelper::Value('dbmf_autosubs_datestart', 'dbmf3_asub');
+// $date_start = new MySBDateTime($datestart_t);
+$datestop_c = MySBConfigHelper::get('dbmf_autosubs_datestop', 'dbmf3_asub');
+// $datestop_t = MySBConfigHelper::Value('dbmf_autosubs_datestop', 'dbmf3_asub');
+// $date_stop = new MySBDateTime($datestop_t);
+$brlock_c = MySBConfigHelper::get('dbmf_autosubs_blockreflock', 'dbmf3_asub');
 
 echo '
 <div class="content">
-  <h1 id="autosubs">' . _G('DBMF_autosubs_configdates') . '</h1>
-  <div class="row">
-    <div class="col-sm-6">Start date</div>
-    <div class="col-sm-6">
-        ' . $date_start->html() . '</div>
+  <h1 id="autosubs">' . _G('DBMF_autosubs_configdates') . '</h1>';
+// echo '
+//   <div class="row">
+//     <div class="col-sm-6">Start date</div>
+//     <div class="col-sm-6">
+//         ' . $date_start->html() . '</div>
+//   </div>
+//   <div class="row">
+//     <div class="col-sm-6">Stop date</div>
+//     <div class="col-sm-6">
+//         ' . $date_stop->html() . '</div>
+//   </div>';
+
+$blockref_sel = MySBDBMFBlockRefHelper::load();
+
+echo '
+<form action="'.$httpbase.'#mod_'.$module->name.'" method="post">
+
+  <div class="row label">
+    '.$access_c->innerRow('confaccess_',$access_c->value, false,
+                        _G($access_c->comments), $access_c->keyname).'
   </div>
-  <div class="row">
-    <div class="col-sm-6">Stop date</div>
-    <div class="col-sm-6">
-        ' . $date_stop->html() . '</div>
+  <div class="row label">
+    '.$datestart_c->innerRow('confdate_',$datestart_c->value, false,
+                        _G($datestart_c->comments), $datestart_c->keyname).'
   </div>
+  <div class="row label">
+    '.$datestop_c->innerRow('confdate_',$datestop_c->value, false,
+                        _G($datestop_c->comments), $datestop_c->keyname).'
+  </div>
+  <div class="row label">
+    <div class="col-sm-6">
+        '._G('BlockRef filled with 1 when autosubs').'
+        <span class="help">dbmf_autosubs_blockref</span>
+    </div>
+    <div class="col-sm-6">
+    <select name="autosubs_blockref">
+        <option value="">None</option>';
+$old_value = MySBConfigHelper::Value('dbmf_autosubs_blockref','dbmf3_asub');
+// echo $old_value.'<br>';
+foreach($blockref_sel as $blockref) {
+    if($blockref->isActive())
+        echo '<option value="'.$blockref->keyname.'" '.
+        MySBUtil::form_isselected($blockref->keyname,$old_value).'>'.$blockref->lname.'</option>';
+}
+echo '
+    </select>
+    </div>
+  </div>';
+$br_lock_checked = '';
+if($brlock_c->getValue()==$old_value)
+    $br_lock_checked = ' checked="checked" ';
+echo '
+  <label class="col-sm-12" for="lockaccess_dbmf_autosubs">
+    <input type="checkbox" class="mysbValue-checkbox" '.
+        $br_lock_checked.' name="lockaccess_dbmf_autosubs" id="lockaccess_dbmf_autosubs">
+    Contact locked if this BlockRef is filled with 1<br>
+    <span class="help">dbmf_autosubs_blockreflock</span>
+  </label>
+
   <div class="row">
     <div class="col-sm-3"></div>
     <div class="col-sm-6">
-      <a class="btn btn-primary center" style="width: 100%; display: inline-block;"
-            href="index.php?tpl=admin/admin&amp;page=main#mod_dbmf3_asub">' . _G('DBMF_autosubs_godates') . '</a>
+      <input type="hidden" name="dbmf_autosubs_godates" value="1">
+      <input type="submit" class="btn-primary"
+             value="' . _G('DBMF_autosubs_godates') . '">
     </div>
     <div class="col-sm-3"></div>
   </div>
+</form>
   ';
 
 
