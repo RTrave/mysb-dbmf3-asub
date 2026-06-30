@@ -17,7 +17,7 @@ class MySBModule_dbmf3_asub extends MySBModuleHelper
 
     public $lname = 'dbmf3_asub';
     public $version = 5;
-    public $release_version = '3b';
+    public $release_version = '3d';
     public $homelink = 'https://github.com/RTrave/mysb-dbmf3-asub';
     public $require = array(
         'core' => 7,
