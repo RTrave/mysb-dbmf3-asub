@@ -60,7 +60,7 @@ echo '
   </div>
   <div class="row label">
     <div class="col-sm-6">
-        '._G('BlockRef filled with 1 when autosubs').'
+        '._G('DBMFASUB_blockref').'
         <span class="help">dbmf_autosubs_blockref</span>
     </div>
     <div class="col-sm-6">
@@ -84,7 +84,7 @@ echo '
   <label class="col-sm-12" for="lockaccess_dbmf_autosubs">
     <input type="checkbox" class="mysbValue-checkbox" '.
         $br_lock_checked.' name="lockaccess_dbmf_autosubs" id="lockaccess_dbmf_autosubs">
-    Contact locked if this BlockRef is filled with 1<br>
+    '._G('DBMFASUB_blockreflock').'<br>
     <span class="help">dbmf_autosubs_blockreflock</span>
   </label>
 
