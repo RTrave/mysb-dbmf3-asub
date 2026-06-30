@@ -16,8 +16,8 @@ class MySBModule_dbmf3_asub extends MySBModuleHelper
 {
 
     public $lname = 'dbmf3_asub';
-    public $version = 4;
-    public $release_version = '3c';
+    public $version = 5;
+    public $release_version = '3b';
     public $homelink = 'https://github.com/RTrave/mysb-dbmf3-asub';
     public $require = array(
         'core' => 7,
@@ -195,6 +195,38 @@ class MySBModule_dbmf3_asub extends MySBModuleHelper
         );
     }
 
+    public function init5()
+    {
+        global $app;
+        $req1 = MySBDB::query('UPDATE '.MySB_DBPREFIX.'config SET '.
+            'comments="DBMFASUB_mailconfirm" WHERE keyname="dbmf_autosubs_mailconfirm" ',
+            "__init.php",
+            false, "dbmf3_asub");
+        $req2 = MySBDB::query('UPDATE '.MySB_DBPREFIX.'config SET '.
+            'comments="DBMFASUB_blockref" WHERE keyname="dbmf_autosubs_blockref" ',
+            "__init.php",
+            false, "dbmf3_asub");
+        $req3 = MySBDB::query('UPDATE '.MySB_DBPREFIX.'config SET '.
+            'comments="DBMFASUB_blockreflock" WHERE keyname="dbmf_autosubs_blockreflock" ',
+            "__init.php",
+            false, "dbmf3_asub");
+        $req4 = MySBDB::query('UPDATE '.MySB_DBPREFIX.'config SET '.
+            'comments="DBMFASUB_anonaccess" WHERE keyname="dbmf_autosubs_anonaccess" ',
+            "__init.php",
+            false, "dbmf3_asub");
+        $req5 = MySBDB::query('UPDATE '.MySB_DBPREFIX.'config SET '.
+            'comments="DBMFASUB_datestart" WHERE keyname="dbmf_autosubs_datestart" ',
+            "__init.php",
+            false, "dbmf3_asub");
+        $req6 = MySBDB::query('UPDATE '.MySB_DBPREFIX.'config SET '.
+            'comments="DBMFASUB_datestop" WHERE keyname="dbmf_autosubs_datestop" ',
+            "__init.php",
+            false, "dbmf3_asub");
+        $req7 = MySBDB::query('UPDATE '.MySB_DBPREFIX.'config SET '.
+            'comments="DBMFASUB_denytext" WHERE keyname="dbmf_autosubs_denytext" ',
+            "__init.php",
+            false, "dbmf3_asub");
+    }
 
     public function uninit()
     {

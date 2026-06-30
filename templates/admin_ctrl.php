@@ -17,6 +17,25 @@ global $app;
 if (!MySBRoleHelper::checkAccess('admin'))
     return;
 
+if (isset($_POST['dbmf_autosubs_godates'])) {
+    $datestart_c = MySBConfigHelper::get('dbmf_autosubs_datestart', 'dbmf3_asub');
+    $datestop_c = MySBConfigHelper::get('dbmf_autosubs_datestop', 'dbmf3_asub');
+    $br_fill_c = MySBConfigHelper::get('dbmf_autosubs_blockref', 'dbmf3_asub');
+    $access_c = MySBConfigHelper::get('dbmf_autosubs_anonaccess', 'dbmf3_asub');
+    $brlock_c = MySBConfigHelper::get('dbmf_autosubs_blockreflock', 'dbmf3_asub');
+    $getvalue = $access_c->htmlProcessValue('confaccess_');
+    if($access_c->updateOnEmpty() || !empty($getvalue)) $access_c->setValue($getvalue);
+    $getvalue = $datestart_c->htmlProcessValue('confdate_');
+    if($datestart_c->updateOnEmpty() || !empty($getvalue)) $datestart_c->setValue($getvalue);
+    $getvalue = $datestop_c->htmlProcessValue('confdate_');
+    if($datestop_c->updateOnEmpty() || !empty($getvalue)) $datestop_c->setValue($getvalue);
+    $br_fill_c->setValue($_POST['autosubs_blockref']);
+    if(!empty($_POST['lockaccess_dbmf_autosubs']) and $_POST['lockaccess_dbmf_autosubs']!=0)
+        $brlock_c->setValue($_POST['autosubs_blockref']);
+    else 
+        $brlock_c->setValue('');
+}
+
 if (isset($_POST['dbmf_autosubs'])) {
     $blockrefs = MySBDBMFBlockRefHelper::load();
     foreach ($blockrefs as $blockref) {
@@ -35,14 +54,14 @@ if (isset($_POST['dbmf_autosubs'])) {
 
 if (isset($_POST["dbmf_autosubs_denytext"])) {
     // echo $_POST["message_deny"]."br";
-    $config_deny = MySBConfigHelper::get("dbmf_autosubs_denytext","dbmf3_asub");
+    $config_deny = MySBConfigHelper::get("dbmf_autosubs_denytext", "dbmf3_asub");
     $config_deny->setValue($_POST["message_deny"]);
 }
 
 if (isset($_POST["dbmf_autosubs_blockedit"])) {
     $ruleblocks = MySBDBMFBlockHelper::load();
     $brules = MySBDBMFASubRuleHelper::blocksLoad();
-    foreach($ruleblocks as $ruleblock) {
+    foreach ($ruleblocks as $ruleblock) {
         // echo "TUTU<br>";
         // if(isset($_POST["body_".$ruleblock->id])) {
         //     echo 'BODY_'.$ruleblock->id.'<br>';
@@ -52,24 +71,23 @@ if (isset($_POST["dbmf_autosubs_blockedit"])) {
         //     echo 'SELMAX_'.$ruleblock->id.'<br>';
         //     echo $_POST["selectmax_".$ruleblock->id].'<br>';
         // }
-        if(!isset($brules[$ruleblock->id])) {
+        if (!isset($brules[$ruleblock->id])) {
             $req_rblocks = MySBDB::query(
                 "INSERT INTO " . MySB_DBPREFIX . "dbmfasubblocks " .
-                '(block_id,comments,sel_max) VALUES ('.$ruleblock->id.',"'.
-                $_POST["body_".$ruleblock->id].'",'.
-                $_POST["selectmax_".$ruleblock->id].')',
+                '(block_id,comments,sel_max) VALUES (' . $ruleblock->id . ',"' .
+                $_POST["body_" . $ruleblock->id] . '",' .
+                $_POST["selectmax_" . $ruleblock->id] . ')',
                 "admin_ctrl",
                 true,
                 'dbmf3_asub',
                 true
             );
-        }
-        else {
+        } else {
             $req_rblocks = MySBDB::query(
                 "UPDATE " . MySB_DBPREFIX . "dbmfasubblocks SET " .
-                'comments="'.MySBUtil::str2db($_POST["body_".$ruleblock->id]).'",'.
-                'sel_max='.$_POST["selectmax_".$ruleblock->id].
-                ' WHERE block_id='.$ruleblock->id,
+                'comments="' . MySBUtil::str2db($_POST["body_" . $ruleblock->id]) . '",' .
+                'sel_max=' . $_POST["selectmax_" . $ruleblock->id] .
+                ' WHERE block_id=' . $ruleblock->id,
                 "admin_ctrl",
                 true,
                 'dbmf3_asub',
@@ -93,12 +111,13 @@ if (isset($_GET["rule_delete"])) {
 }
 if (isset($_POST['dbmf_autosubs_ruleupdate'])) {
     $blockrefs = MySBDBMFBlockRefHelper::load();
-    $br_csv = new MySBCSValues(null,true);
+    $br_csv = new MySBCSValues(null, true);
     foreach ($blockrefs as $blockref) {
 
-        if (isset($_POST[$blockref->keyname]) && $blockref->autosubs==1 ) {
+        if (isset($_POST[$blockref->keyname]) && $blockref->autosubs == 1) {
             // echo $blockref->keyname;
-            $br_csv->add($blockref->keyname);}
+            $br_csv->add($blockref->keyname);
+        }
 
         //print_r($_POST);
         //echo $blockref->keyname.':'.$_POST[$blockref->keyname].' / ';
