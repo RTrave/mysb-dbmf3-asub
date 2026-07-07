@@ -22,7 +22,7 @@ if (isset($_POST['dbmf_autosubs_godates'])) {
     $datestop_c = MySBConfigHelper::get('dbmf_autosubs_datestop', 'dbmf3_asub');
     $br_fill_c = MySBConfigHelper::get('dbmf_autosubs_blockref', 'dbmf3_asub');
     $access_c = MySBConfigHelper::get('dbmf_autosubs_anonaccess', 'dbmf3_asub');
-    $brlock_c = MySBConfigHelper::get('dbmf_autosubs_blockreflock', 'dbmf3_asub');
+    $brlock_c = MySBConfigHelper::get('dbmf_autosubs_reeditable', 'dbmf3_asub');
     $getvalue = $access_c->htmlProcessValue('confaccess_');
     if($access_c->updateOnEmpty() || !empty($getvalue)) $access_c->setValue($getvalue);
     $getvalue = $datestart_c->htmlProcessValue('confdate_');
@@ -31,7 +31,7 @@ if (isset($_POST['dbmf_autosubs_godates'])) {
     if($datestop_c->updateOnEmpty() || !empty($getvalue)) $datestop_c->setValue($getvalue);
     $br_fill_c->setValue($_POST['autosubs_blockref']);
     if(!empty($_POST['lockaccess_dbmf_autosubs']) and $_POST['lockaccess_dbmf_autosubs']!=0)
-        $brlock_c->setValue($_POST['autosubs_blockref']);
+        $brlock_c->setValue(1);
     else 
         $brlock_c->setValue('');
 }
@@ -135,17 +135,31 @@ if (isset($_POST['dbmf_autosubs_ruleupdate'])) {
 
 
 $bradd = MySBConfigHelper::Value('dbmf_autosubs_blockref', 'dbmf3_asub');
-$datebr = MySBConfigHelper::Value('dbmf_autosubs_datebr', 'dbmf3_asub');
+// $datebr = MySBConfigHelper::Value('dbmf_autosubs_datebr', 'dbmf3_asub');
 
-if (isset($_POST['dbmf_autosubs_resetblockref'])) {
-    $pinbr_sql = "UPDATE " . MySB_DBPREFIX . "dbmfcontacts SET " . $bradd . "='';";
+if (isset($_POST['dbmf_autosubs_reset'])) {
+    $pinbr_sql = "UPDATE " . MySB_DBPREFIX . "dbmfcontacts SET ";
+    $pinbr_coma = false;
+    $block_asub = MySBDBMFBlockHelper::getByName('DBMFASUB_block');
+    $blockrefs_asub = $block_asub->loadBlockRefs();
+    foreach($blockrefs_asub as $brasub) {
+        if(!$pinbr_coma)
+            $pinbr_coma = true;
+        else
+            $pinbr_sql .= ", ";
+        if($brasub->getType()=="datetime")
+            $pinbr_sql .= $brasub->keyname . "='0000-00-00 00:00:00'";
+        else
+            $pinbr_sql .= $brasub->keyname . "=0";
+    }
+    // echo $pinbr_sql;
     $pinbr_req = MySBDB::query($pinbr_sql);
 }
 
-if (isset($_POST['dbmf_autosubs_resetdatebr'])) {
-    $datebr_sql = "UPDATE " . MySB_DBPREFIX . "dbmfcontacts SET " . $datebr . "='0000-00-00 00:00:00';";
-    $datebr_req = MySBDB::query($datebr_sql);
-}
+// if (isset($_POST['dbmf_autosubs_resetdatebr'])) {
+//     $datebr_sql = "UPDATE " . MySB_DBPREFIX . "dbmfcontacts SET " . $datebr . "='0000-00-00 00:00:00';";
+//     $datebr_req = MySBDB::query($datebr_sql);
+// }
 
 include(_pathT('admin', 'dbmf3_asub'));
 

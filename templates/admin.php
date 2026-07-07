@@ -24,7 +24,7 @@ $datestart_c = MySBConfigHelper::get('dbmf_autosubs_datestart', 'dbmf3_asub');
 $datestop_c = MySBConfigHelper::get('dbmf_autosubs_datestop', 'dbmf3_asub');
 // $datestop_t = MySBConfigHelper::Value('dbmf_autosubs_datestop', 'dbmf3_asub');
 // $date_stop = new MySBDateTime($datestop_t);
-$brlock_c = MySBConfigHelper::get('dbmf_autosubs_blockreflock', 'dbmf3_asub');
+$brlock_c = MySBConfigHelper::get('dbmf_autosubs_reeditable', 'dbmf3_asub');
 
 echo '
 <div class="content">
@@ -44,7 +44,7 @@ echo '
 $blockref_sel = MySBDBMFBlockRefHelper::load();
 
 echo '
-<form action="'.$httpbase.'#mod_'.$module->name.'" method="post">
+<form action="'.$httpbase.'" method="post">
 
   <div class="row label">
     '.$access_c->innerRow('confaccess_',$access_c->value, false,
@@ -78,14 +78,14 @@ echo '
     </div>
   </div>';
 $br_lock_checked = '';
-if($brlock_c->getValue()==$old_value)
+if($brlock_c->getValue()=="1")
     $br_lock_checked = ' checked="checked" ';
 echo '
   <label class="col-sm-12" for="lockaccess_dbmf_autosubs">
     <input type="checkbox" class="mysbValue-checkbox" '.
         $br_lock_checked.' name="lockaccess_dbmf_autosubs" id="lockaccess_dbmf_autosubs">
-    '._G('DBMFASUB_blockreflock').'<br>
-    <span class="help">dbmf_autosubs_blockreflock</span>
+    '._G('DBMFASUB_reeditable').'<br>
+    <span class="help">dbmf_autosubs_reeditable</span>
   </label>
 
   <div class="row">
@@ -307,11 +307,11 @@ echo '
 if ($bradd != '')
     echo '
 <form action="' . $httpbase . '#autosubs-reset" method="post"
-        OnSubmit="return mysb_confirm(\'Reset autosubs pin in ALL contacts ?\')">
+        OnSubmit="return mysb_confirm(\'Reset autosubs fields in ALL contacts ?\')">
   <div class="row">
     <div class="col-sm-3"></div>
     <div class="col-sm-6">
-      <input type="hidden" name="dbmf_autosubs_resetblockref" value="1">
+      <input type="hidden" name="dbmf_autosubs_reset" value="1">
       <input type="submit" class="btn-danger"
              value="' . _G('DBMF_autosubs_resetblockref') . ': ' . $bradd . '">
     </div>
@@ -328,29 +328,29 @@ else
     <div class="col-sm-3"></div>
   </div>';
 
-if ($datebr != '')
-    echo '
-<form action="' . $httpbase . '#autosubs-reset" method="post"
-        OnSubmit="return mysb_confirm(\'Reset autosubs dates in ALL contacts ?\')">
-  <div class="row">
-    <div class="col-sm-3"></div>
-    <div class="col-sm-6">
-      <input type="hidden" name="dbmf_autosubs_resetdatebr" value="1">
-      <input type="submit" class="btn-danger"
-             value="' . _G('DBMF_autosubs_resetdatebr') . ': ' . $datebr . '">
-    </div>
-    <div class="col-sm-3"></div>
-  </div>
-</form>';
-else
-    echo '
-  <div class="row">
-    <div class="col-sm-3"></div>
-    <div class="col-sm-6">
-      ' . _G('DBMF_autosubs_resetdatebr_unset') . '
-    </div>
-    <div class="col-sm-3"></div>
-  </div>';
+// if ($datebr != '')
+//     echo '
+// <form action="' . $httpbase . '#autosubs-reset" method="post"
+//         OnSubmit="return mysb_confirm(\'Reset autosubs dates in ALL contacts ?\')">
+//   <div class="row">
+//     <div class="col-sm-3"></div>
+//     <div class="col-sm-6">
+//       <input type="hidden" name="dbmf_autosubs_resetdatebr" value="1">
+//       <input type="submit" class="btn-danger"
+//              value="' . _G('DBMF_autosubs_resetdatebr') . ': ' . $datebr . '">
+//     </div>
+//     <div class="col-sm-3"></div>
+//   </div>
+// </form>';
+// else
+//     echo '
+//   <div class="row">
+//     <div class="col-sm-3"></div>
+//     <div class="col-sm-6">
+//       ' . _G('DBMF_autosubs_resetdatebr_unset') . '
+//     </div>
+//     <div class="col-sm-3"></div>
+//   </div>';
 
 echo '
 </div>';

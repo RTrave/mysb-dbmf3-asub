@@ -26,7 +26,7 @@ if ($datestart_t) {
     $date_start = new MySBDateTime($datestart_t);
     // echo "TA:" . $date_start->absDiff("i");
     if ($date_start->absDiff("i") < 0) {
-        $app->displayStopAlert(_G(MySBConfigHelper::Value('dbmf_autosubs_denytext', 'dbmf3_asub')) . 
+        $app->displayStopAlert(_G(MySBConfigHelper::Value('dbmf_autosubs_denytext', 'dbmf3_asub')) .
             "<br><small><i>start date: " . $date_start->html() . "</i></small><br>");
     }
 }
@@ -35,7 +35,7 @@ if ($datestop_t && $datestop_t != $datestart_t) {
     $date_stop = new MySBDateTime($datestop_t);
     // echo "TB:" . $date_stop->absDiff("i");
     if ($date_stop->absDiff("i") > 0) {
-        $app->displayStopAlert(_G(MySBConfigHelper::Value('dbmf_autosubs_denytext', 'dbmf3_asub')) . 
+        $app->displayStopAlert(_G(MySBConfigHelper::Value('dbmf_autosubs_denytext', 'dbmf3_asub')) .
             "<br><small><i>stop date: " . $date_stop->html() . "</i></small>");
     }
 }
@@ -45,6 +45,8 @@ if (isset($_GET['pid']))
     $pid = $_GET['pid'];
 else
     $pid = '';
+
+$brlock_c = MySBConfigHelper::get('dbmf_autosubs_reeditable', 'dbmf3_asub');
 
 if (isset($_POST['autosubs_modifs']) and $_POST['autosubs_modifs'] != '') {
     $today = getdate();
@@ -59,12 +61,31 @@ if (isset($_POST['autosubs_modifs']) and $_POST['autosubs_modifs'] != '') {
     foreach ($autosubs_ids as $as_id) {
 
         $contact = new MySBDBMFContact($as_id);
+        $yet_exists = false;
         //echo $contact->id.'/';
         $contact_datas = array(
             'lastname' => $_POST[$as_id . 'lastname'],
             'firstname' => $_POST[$as_id . 'firstname'],
             'date_modif' => $today_date
         );
+        // set asub values
+        $block_asub = MySBDBMFBlockHelper::getByName('DBMFASUB_block');
+        $blockrefs_asub = $block_asub->loadBlockRefs();
+        foreach ($blockrefs_asub as $brasub) {
+            if ($brasub->lname == "DBMFASUB_creadate") {
+                $datekn = $brasub->keyname;
+                if (
+                    !isset($contact->$datekn) or
+                    $contact->$datekn == '0000-00-00 00:00:00'
+                ) {
+                    $contact_datas[$brasub->keyname] = $today_date;
+                } else {
+                    $yet_exists = true;
+                }
+            } elseif ($brasub->lname == "DBMFASUB_updtdate") {
+                $contact_datas[$brasub->keyname] = $today_date;
+            }
+        }
         foreach ($blockrefs as $blockref) {
             if (
                 ($blockref->autosubs == 1 && $blockref->isActive()) &&
@@ -75,7 +96,7 @@ if (isset($_POST['autosubs_modifs']) and $_POST['autosubs_modifs'] != '') {
                 if ($contact->$mkeyname == '')
                     $contact->$mkeyname = 0;
                 // $mail_recap .= $brules_ctrl[$blockref->block_id]->select_max.'/';
-                if ($blockref->block_id != 1) {
+                if ($blockref->block_id != 1) { // TODO: trads
                     if ($contact->$mkeyname != $mkeyvalue) {
                         if ($mkeyvalue == 1)
                             $mail_recap .= '<br>Nouvelle inscription: <b>' . $blockref->lname . '</b>';
@@ -100,7 +121,8 @@ if (isset($_POST['autosubs_modifs']) and $_POST['autosubs_modifs'] != '') {
         if ($datebr != '')
             $contact_datas[$datebr] = $today_date;
         // Update datas
-        $contact->update($contact_datas);
+        if (!$yet_exists || $brlock_c->getValue() == '1')
+            $contact->update($contact_datas);
 
         $ntf_names .= '
 ' . _G('DBMF_common_lastname') . ': <b>' . $contact->lastname . '</b><br>
