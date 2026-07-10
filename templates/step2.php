@@ -48,12 +48,25 @@ echo '
 $autosubs_id = '';
 $bordertop = '';
 
+// set asub values
+$datekn = '';
+$updtkn = '';
+$block_asub = MySBDBMFBlockHelper::getByName('DBMFASUB_block');
+$blockrefs_asub = $block_asub->loadBlockRefs();
+foreach ($blockrefs_asub as $brasub) {
+    if ($brasub->lname == "DBMFASUB_creadate") 
+        $datekn = $brasub->keyname;
+    elseif ($brasub->lname == "DBMFASUB_updtdate")
+        $updtkn = $brasub->keyname;
+}
+
 while ($data_wcheck = MySBDB::fetch_array($app->dbmf_req_wcheck)) {
 
     $br_locked = false;
     $br_locked_txt = '';
-    $brlock = MySBConfigHelper::Value('dbmf_autosubs_blockreflock', 'dbmf3_asub');
-    if ($brlock != '' and $data_wcheck[$brlock] != 0) {
+    // $brlock = MySBConfigHelper::Value('dbmf_autosubs_blockreflock', 'dbmf3_asub');
+    $breditable = MySBConfigHelper::get('dbmf_autosubs_reeditable', 'dbmf3_asub');
+    if ($breditable->getValue() != '1' and $data_wcheck[$datekn] != 0) {
         $br_locked = true;
         $br_locked_txt = ' <i>(read-only)</i>';
     } else {
@@ -107,7 +120,7 @@ while ($data_wcheck = MySBDB::fetch_array($app->dbmf_req_wcheck)) {
         $blockrefs = $block->loadBlockRefs();
         $nb_asub_actives = 0;
         foreach ($blockrefs as $blockref) {
-            if ($blockref->autosubs == 1 and !$br_locked)
+            if ($blockref->autosubs == 1)
                 $nb_asub_actives++;
         }
         if (!$nb_asub_actives)
@@ -127,10 +140,10 @@ while ($data_wcheck = MySBDB::fetch_array($app->dbmf_req_wcheck)) {
         // $blockrefs = MySBDBMFBlockRefHelper::load();
 
         foreach ($blockrefs as $blockref) {
-            if ($blockref->autosubs == 1 and !$br_locked) {
+            if ($blockref->autosubs == 1) {
                 echo '
   <div class="row label ' . $noinput . '">';
-                if (!isset($_POST['autosubs_modifs'])) {
+                if (!isset($_POST['autosubs_modifs']) and !$br_locked) {
                     if (
                         $blockref->type == MYSB_VALUE_TYPE_DATE or
                         $blockref->type == MYSB_VALUE_TYPE_DATETIME

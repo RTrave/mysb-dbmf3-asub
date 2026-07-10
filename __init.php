@@ -16,12 +16,12 @@ class MySBModule_dbmf3_asub extends MySBModuleHelper
 {
 
     public $lname = 'dbmf3_asub';
-    public $version = 5;
+    public $version = 6;
     public $release_version = '3d';
     public $homelink = 'https://github.com/RTrave/mysb-dbmf3-asub';
     public $require = array(
         'core' => 7,
-        'dbmf3' => 23
+        'dbmf3' => 24
     );
 
     public function create()
@@ -50,6 +50,8 @@ class MySBModule_dbmf3_asub extends MySBModuleHelper
         $req = MySBDB::query('DROP TABLE '.MySB_DBPREFIX.'dbmfasubblocks',
             "__init.php",
             false, "dbmf3_asub");
+        MySBDBMFBlockHelper::deleteByName('DBMFASUB_block');
+
 
     }
 
@@ -228,6 +230,24 @@ class MySBModule_dbmf3_asub extends MySBModuleHelper
             false, "dbmf3_asub");
     }
 
+    public function init6()
+    {
+        global $app;
+        MySBConfigHelper::create(
+            'dbmf_autosubs_reeditable',
+            '',
+            MYSB_VALUE_TYPE_BOOL,
+            'DBMFASUB_reeditable',
+            'dbmf3_asub'
+        );
+        $asub_block = MySBDBMFBlockHelper::create('DBMFASUB_block');
+        MySBDBMFBlockRefHelper::create('DBMFASUB_creadate', MYSB_VALUE_TYPE_DATETIME, $asub_block->id)->statusSwitch();
+        MySBDBMFBlockRefHelper::create('DBMFASUB_updtdate', MYSB_VALUE_TYPE_DATETIME, $asub_block->id)->statusSwitch();
+        MySBConfigHelper::delete('dbmf_autosubs_datebr', 'dbmf3_asub');
+        MySBConfigHelper::delete('dbmf_autosubs_blockreflock', 'dbmf3_asub');
+
+    }
+
     public function uninit()
     {
         global $app;
@@ -236,9 +256,9 @@ class MySBModule_dbmf3_asub extends MySBModuleHelper
         MySBConfigHelper::delete('dbmf_autosubs_multiples', 'dbmf3_asub');
         MySBConfigHelper::delete('dbmf_autosubs_denytext', 'dbmf3_asub');
         MySBRoleHelper::delete('dbmf_autosubs');
-        MySBConfigHelper::delete('dbmf_autosubs_datebr', 'dbmf3_asub');
+        // MySBConfigHelper::delete('dbmf_autosubs_datebr', 'dbmf3_asub');
         MySBConfigHelper::delete('dbmf_autosubs_blockref', 'dbmf3_asub');
-        MySBConfigHelper::delete('dbmf_autosubs_blockreflock', 'dbmf3_asub');
+        // MySBConfigHelper::delete('dbmf_autosubs_blockreflock', 'dbmf3_asub');
         MySBConfigHelper::delete('dbmf_autosubs_mailconfirm', 'dbmf3_asub');
         MySBConfigHelper::delete('dbmf_autosubs_mailaddress', 'dbmf3_asub');
         MySBConfigHelper::delete('dbmf_autosubs_anonaccess', 'dbmf3_asub');
