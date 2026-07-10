@@ -202,8 +202,11 @@ foreach ($ruleblocks as $ruleblock) {
         $comments = $brules[$ruleblock->id]->block_comments;
         $sel_max = $brules[$ruleblock->id]->select_max;
     }
+    $globaltext = '';
+    if($ruleblock->id==1)
+        $globaltext = "("._G("DBMFASUB_globaltext").")";
     echo '
-    <h2>' . _G($ruleblock->lname) . '</h2>
+    <h2>' . _G($ruleblock->lname) . ' '. $globaltext .'</h2>
     <div class="row">
     <div class="col-3">
         ' . _G('DBMF_autosubs_blocks_entry') . '<br>

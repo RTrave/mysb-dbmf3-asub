@@ -96,15 +96,15 @@ if (isset($_POST['autosubs_modifs']) and $_POST['autosubs_modifs'] != '') {
                 if ($contact->$mkeyname == '')
                     $contact->$mkeyname = 0;
                 // $mail_recap .= $brules_ctrl[$blockref->block_id]->select_max.'/';
-                if ($blockref->block_id != 1) { // TODO: trads
+                if ($blockref->block_id != 1) {
                     if ($contact->$mkeyname != $mkeyvalue) {
                         if ($mkeyvalue == 1)
-                            $mail_recap .= '<br>Nouvelle inscription: <b>' . $blockref->lname . '</b>';
+                            $mail_recap .= '<br>'._G("DBMFASUB_subsnew").': <b>' . $blockref->lname . '</b>';
                         else
-                            $mail_recap .= '<br>Désinscription: <b>' . $blockref->lname . '</b>';
+                            $mail_recap .= '<br>'._G("DBMFASUB_subsdel").': <b>' . $blockref->lname . '</b>';
                     }
                     if ($contact->$mkeyname == $mkeyvalue && $mkeyvalue == 1) {
-                        $mail_recap .= '<br>Inscription initiale: <b>' . $blockref->lname . '</b>';
+                        $mail_recap .= '<br>'._G("DBMFASUB_subsexists").': <b>' . $blockref->lname . '</b>';
                     }
                 }
                 $contact_datas[$blockref->keyname] =
