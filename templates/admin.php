@@ -307,7 +307,7 @@ echo '
 <div class="content">
   <h1 id="autosubs-reset">' . _G('DBMF_autosubs_reset') . '</h1>';
 
-if ($bradd != '')
+// if ($bradd != '')
     echo '
 <form action="' . $httpbase . '#autosubs-reset" method="post"
         OnSubmit="return mysb_confirm(\'Reset autosubs fields in ALL contacts ?\')">
@@ -316,20 +316,20 @@ if ($bradd != '')
     <div class="col-sm-6">
       <input type="hidden" name="dbmf_autosubs_reset" value="1">
       <input type="submit" class="btn-danger"
-             value="' . _G('DBMF_autosubs_resetblockref') . ': ' . $bradd . '">
+             value="' . _G('DBMF_autosubs_resetblockref') . '">
     </div>
     <div class="col-sm-3"></div>
   </div>
 </form>';
-else
-    echo '
-  <div class="row">
-    <div class="col-sm-3"></div>
-    <div class="col-sm-6">
-      ' . _G('DBMF_autosubs_resetblockref_unset') . '
-    </div>
-    <div class="col-sm-3"></div>
-  </div>';
+// else
+//     echo '
+//   <div class="row">
+//     <div class="col-sm-3"></div>
+//     <div class="col-sm-6">
+//       ' . _G('DBMF_autosubs_resetblockref_unset') . '
+//     </div>
+//     <div class="col-sm-3"></div>
+//   </div>';
 
 // if ($datebr != '')
 //     echo '
