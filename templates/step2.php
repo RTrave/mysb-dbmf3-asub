@@ -66,7 +66,7 @@ while ($data_wcheck = MySBDB::fetch_array($app->dbmf_req_wcheck)) {
     $br_locked_txt = '';
     // $brlock = MySBConfigHelper::Value('dbmf_autosubs_blockreflock', 'dbmf3_asub');
     $breditable = MySBConfigHelper::get('dbmf_autosubs_reeditable', 'dbmf3_asub');
-    if ($breditable->getValue() != '1' and $data_wcheck[$datekn] != 0) {
+    if ($breditable->getValue() != '1' and $data_wcheck[$datekn] != "0000-00-00 00:00:00") {
         $br_locked = true;
         $br_locked_txt = ' <i>(read-only)</i>';
     } else {
