@@ -148,6 +148,7 @@ if (isset($_POST['dbmf_autosubs_reset'])) {
         else
             $pinbr_sql .= ", ";
         if($brasub->getType()=="datetime")
+            // $pinbr_sql .= $brasub->keyname . "=''";
             $pinbr_sql .= $brasub->keyname . "='0000-00-00 00:00:00'";
         else
             $pinbr_sql .= $brasub->keyname . "=0";
