@@ -79,7 +79,8 @@ if (isset($_POST['autosubs_modifs']) and $_POST['autosubs_modifs'] != '') {
                 $datekn = $brasub->keyname;
                 if (
                     !isset($contact->$datekn) or
-                    $contact->$datekn == '0000-00-00 00:00:00'
+                    $contact->$datekn == '0000-00-00 00:00:00' or
+                    $contact->$datekn == '0'
                 ) {
                     $contact_datas[$brasub->keyname] = $today_date;
                 } else {
